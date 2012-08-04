@@ -1,0 +1,8 @@
+vobstat <- function(path,field) {
+  t <- read.table(path, header=TRUE)
+    attach(t)
+    hist(field,seq(min(field),max(field),(max(field)-min(field))/1000),prob=TRUE)
+    detach(t)
+    rm(t)
+}
+

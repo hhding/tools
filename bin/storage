@@ -1,0 +1,17 @@
+#!/bin/bash
+src=$1
+output=$2
+cat <<EOF | gnuplot
+set title "Date vs Disk Usage"
+set terminal png
+set grid
+#set yrange [ 0 : ]
+set ylabel "Disk Usage"
+set key left
+set xlabel "Date\nTime"
+set timefmt "%Y-%m-%d"
+set xdata time
+set output '$output'
+plot '$src' using 1:2 t '$src' with linespoints
+EOF
+echo done

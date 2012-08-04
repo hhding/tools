@@ -1,0 +1,18 @@
+#!/bin/bash
+src=$1
+output=$2
+cat <<EOF | gnuplot
+set title "Date vs Volume"
+set terminal png
+set grid
+#set yrange [ 0 : ]
+set ylabel "Concentration\nmg/l"
+set key left
+set xlabel "Date\nTime"
+set timefmt "%d/%m/%Y %H:%M"
+set xdata time
+set xrange [ "1/5/2009":"1/6/2009" ]
+set output '$output'
+plot '$src' using 1:3 t 'Volume' with linespoints
+EOF
+echo done
