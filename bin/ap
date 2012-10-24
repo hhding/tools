@@ -1,0 +1,46 @@
+#!/bin/bash
+
+ap_uuid="be429d55-22ac-471b-a9eb-eddedf5f0015"
+cheetah_uuid="b3a0e6ba-3553-4eb1-9f3d-a144c9207e6c"
+
+if [ "x$1" == "xdown" ]; then
+    sudo /etc/init.d/hostapd stop
+    nmcli con up uuid $cheetah_uuid
+    exit 0
+fi
+
+step=0
+# check if ap has enabled
+if nmcli con status | grep -q $ap_uuid; then
+    ((step=step+1))
+    echo $step. check connection $ap_uuid pass
+    # ap enabled, check if hostapd is up?
+    if /etc/init.d/hostapd status > /dev/null; then
+        ((step=step+1))
+        echo $step. check hostapd pass
+        # do nothing
+        :
+    else
+        ((step=step+1))
+        echo $step. check starting hostapd
+        # in case hostapd is down, start it
+        sudo /etc/init.d/hostapd start
+    fi
+else
+    # if ap is not up, shutdown hostapd or the ad-hoc connection will not works
+    ((step=step+1))
+    echo $step. stopping hostapd
+    sudo /etc/init.d/hostapd stop
+    sleep 2
+    ((step=step+1))
+    echo $step. start connection $ap_uuid
+    if nmcli con up uuid $ap_uuid; then
+        ((step=step+1))
+        echo $step. starting hostapd
+        sudo /etc/init.d/hostapd start
+    else
+        ((step=step+1))
+        echo $step. active $ap_uuid failed
+    fi
+fi
+
