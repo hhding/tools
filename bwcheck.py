@@ -64,7 +64,7 @@ def main():
     setup_logging(target)
     while True:
         start_time = time.time()
-        check_proxy(url, target, timeout = 60)
+        check_proxy(url, target, timeout = 59)
         elapsed = time.time() - start_time
         time.sleep(60-elapsed-0.1)
 
